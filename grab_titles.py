@@ -2,47 +2,47 @@ import pandas as pd
 
 url = 'https://en.wikipedia.org/wiki/Billboard_Year-End_Hot_100_singles_of_'
 
-def obtener_datos(url):
-    """TODO: Detallar función
+def get_data(url):
+    """TODO: Specify function
     
     Arguments:
-        url {str} -- Cadena que contendrá la dirección desde donde se quieren
-                     obtener los datos
+        url {str} -- String containing the address from where you want to obtain the data
     
     Returns:
-        pandas.DataFrame -- Conjunto de datos que contendrá las tablas de las
-                            urls enviadas
+        pandas.DataFrame -- Data set containing tables of the sent urls
     """
-    datos = pd.read_html(url, header=0)
-    #Tomar la primera tabla que tenga la forma n x 3.
-    for tabla in datos:
-        if tabla.shape[1] == 3:
-            datos = tabla
+    data = pd.read_html(url, header=0)
+    # Take the first table that has the form n x 3.
+
+    for table in data:
+        if table.shape[1] == 3:
+            data = table
             break
-    datos = datos.drop(columns=datos.columns[0])
-    return datos
+    data = data.drop(columns=data.columns[0])
+    return data
 
-anos_datos = []
+year_data = []
+
 for i in range(1959, 2018):
-    nueva_url = "{}{}".format(url, i)
-    my_df = obtener_datos(nueva_url)
+    new_url = "{}{}".format(url, i)
+    my_df = get_data(new_url)
 
-    # Si hay un error en la forma de la tabla terminar el programa y decir el año
+    # If there is an error in the table form(atting?), finish the program (function?) and say in which year the error occurs
     if my_df.shape[1] != 2:
-        print("error en el año {}".format(i))
+        print("error in the year {}".format(i))
         print(my_df.shape)
         quit()
 
     for j, col in enumerate(my_df.columns):
         my_df.iloc[:, j] = my_df.iloc[:, j].str.replace('"', '')
 
-    my_df['Año'] = i
-    anos_datos.append(my_df)
+    my_df['Year'] = i
+    year_data.append(my_df)
 
-tabla_final = pd.concat(anos_datos, ignore_index=True)
+final_table = pd.concat(year_data, ignore_index=True)
 
-print(tabla_final)
-print(anos_datos[0])
+print(final_table)
+print(year_data[0])
 
-tabla_final.to_csv('lista_de_canciones.csv', 
-                   columns=['Año', 'Title', 'Artist(s)'], index=False)
+final_table.to_csv('songlist.csv', 
+                   columns=['Year', 'Title', 'Artist(s)'], index=False)
